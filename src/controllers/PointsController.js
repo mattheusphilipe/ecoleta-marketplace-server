@@ -92,6 +92,7 @@ class PointerController {
             addressNumber,
             latitude,
             longitude,
+            telephone,
             items,
         } = request.body;
 
@@ -131,8 +132,9 @@ class PointerController {
                      city,
                      street: street || '',
                      zip_code,
-                     addressNumber:addressNumber || '',
-                     neighborhood:neighborhood || '',
+                     addressNumber: addressNumber || '',
+                     neighborhood: neighborhood || '',
+                     telephone,
                     latitude,
                      longitude
                  };
