@@ -8,6 +8,7 @@ exports.up = async function up(knex) {
         table.string('image').notNullable();
         table.string('name').notNullable();
         table.string('email').notNullable();
+        table.string('telephone').notNullable();
         table.string('UF', 2).notNullable();
         table.string('city').notNullable();
         table.string('street').notNullable();
