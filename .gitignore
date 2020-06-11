@@ -4,3 +4,7 @@ uploads/*
 userUploads/*
 
 *.sqlite
+
+.DS_store
+
+yarn-error.log
