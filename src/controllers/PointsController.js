@@ -32,7 +32,7 @@ class PointerController {
                 
                  ({
                    ...point,
-                    image_url: `${process.env.APP_URL}/userUploads/${point.image}`
+                    image_url: `${process.env.APP_URL}userUploads/${point.image}`
                 })
                 
             );
@@ -62,7 +62,7 @@ class PointerController {
             const serializedPoints =
             {
                 ...point,
-                image_url: `${process.env.APP_URL}/userUploads/${point.image}`
+                image_url: `${process.env.APP_URL}userUploads/${point.image}`
             };
 
             // SELECT * FROM collected_items 
