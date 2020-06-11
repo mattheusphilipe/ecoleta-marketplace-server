@@ -26,9 +26,18 @@ class PointerController {
             .where('city', String(city))
             .where('UF', String(UF))
             .distinct()
-            .select('collect_points.*'); // collect_points.* pegar os atributos somente da tabela points
+            .select('collect_points.*'); // collect_points.* pegar os atri
+            
+            const serializedPoints = pointsFilteredByCollectedItemId.map((point) => 
+                
+                 ({
+                   ...point,
+                    image_url: `${process.env.APP_URL}/userUploads/${point.image}`
+                })
+                
+            );
         
-            return response.json(pointsFilteredByCollectedItemId);
+            return response.json(serializedPoints);
 
         } catch (err) {
             console.error({...err})
@@ -49,6 +58,13 @@ class PointerController {
                 return response.status(400).json({message: 'Collect point not found.'});
             }
 
+                        
+            const serializedPoints =
+            {
+                ...point,
+                image_url: `${process.env.APP_URL}/userUploads/${point.image}`
+            };
+
             // SELECT * FROM collected_items 
             //JOIN point_collected_items on collected_items.id = point_collected_items.collected_item_id
             // WHERE point_collected_items.collect_point_id = id
@@ -65,7 +81,7 @@ class PointerController {
 
             // sem a clausula select ele projeta tudo
 
-            return response.json({point, itemsCollectedByThisPoint});
+            return response.json({serializedPoints, itemsCollectedByThisPoint});
 
         } catch (err) {
             return response.status(400).json({message: 'Error to execute queryBuilder', error: err});
@@ -81,7 +97,6 @@ class PointerController {
 
 
         const {
-            image:img,
             name,
             email,
             UF,
@@ -93,36 +108,14 @@ class PointerController {
             latitude,
             longitude,
             telephone,
+            cellphone,
             items,
         } = request.body;
 
         try {
             const trx = await knex.transaction();
 
-            // const collect_point_id: Number[] = await knex.transaction(
-            //     (t) => 
-            //     {
-            //         return 
-            //         knex('collect_points')
-            //         .transacting(t)
-            //         .insert(
-            //             {
-            //                 image,
-            //                 name,
-            //                 email,
-            //                 UF,
-            //                 city,
-            //                 street,
-            //                 zip_code,
-            //                 addressNumber,
-            //                 latitude,
-            //                 longitude
-            //             })
-            //             .then(() => t.commit())
-            //             .catch(() => t.rollback())
-            //     }
-            // );
-            const image = img || 'https://images.unsplash.com/photo-1506484381205-f7945653044d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60'
+            const image = request.file.filename || 'https://images.unsplash.com/photo-1506484381205-f7945653044d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60'
 
             const pointsItems = {
                      image,
@@ -135,13 +128,17 @@ class PointerController {
                      addressNumber: addressNumber || '',
                      neighborhood: neighborhood || '',
                      telephone,
+                     cellphone: cellphone || '',
                     latitude,
                      longitude
                  };
 
             const collect_point_id =  await trx('collect_points').insert(pointsItems);
     
-                const pointItems = items.map((collected_item_id) => 
+                const pointItems = items
+                .split(',')
+                .map(item => +item.trim()) // + hackconverter também apra numero
+                .map((collected_item_id) => 
                     ({
                             collected_item_id, 
                             collect_point_id: collect_point_id[0]
