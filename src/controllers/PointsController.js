@@ -32,7 +32,8 @@ class PointerController {
                 
                  ({
                    ...point,
-                    image_url: `${process.env.APP_URL}userUploads/${point.image}`
+                   image_url: `${process.env.APP_URL}userUploads/${point.image}`
+                    // image_url: `http://localhost:3232/userUploads/${point.image}`
                 })
                 
             );
@@ -63,6 +64,7 @@ class PointerController {
             {
                 ...point,
                 image_url: `${process.env.APP_URL}userUploads/${point.image}`
+                // image_url: `http://localhost:3232/userUploads/${point.image}`
             };
 
             // SELECT * FROM collected_items 
@@ -113,27 +115,32 @@ class PointerController {
         } = request.body;
 
         try {
+
             const trx = await knex.transaction();
 
             const image = request.file.filename || 'https://images.unsplash.com/photo-1506484381205-f7945653044d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60'
 
             const pointsItems = {
-                     image,
-                     name,
-                     email,
-                     UF,
-                     city,
-                     street: street || '',
-                     zip_code,
-                     addressNumber: addressNumber || '',
-                     neighborhood: neighborhood || '',
-                     telephone,
-                     cellphone: cellphone || '',
-                    latitude,
-                     longitude
+                     image: String(image),
+                     name: String(name),
+                     email: String(email),
+                     UF: String(UF),
+                     city: String(city),
+                     street: String(street) || '',
+                     zip_code: String(zip_code),
+                     addressNumber: parseInt(addressNumber) || 0,
+                     neighborhood: String(neighborhood) || '',
+                     telephone: String(telephone) ,
+                     cellphone: String(cellphone) || '',
+                     latitude: parseFloat(latitude),
+                     longitude: parseFloat(longitude)
                  };
 
-            const collect_point_id =  await trx('collect_points').insert(pointsItems);
+             
+
+            const collect_point_id =  await trx('collect_points').returning('id').insert(pointsItems);
+            // sqlite dont needs returning id but pg needs const 
+            //collect_point_id =  await trx('collect_points').insert(pointsItems);
     
                 const pointItems = items
                 .split(',')
@@ -145,8 +152,7 @@ class PointerController {
                     })
                 );
     
-                await trx('point_collected_items').insert(pointItems);
-
+                const t = await trx('point_collected_items').insert(pointItems);
                 await trx.commit();
     
     

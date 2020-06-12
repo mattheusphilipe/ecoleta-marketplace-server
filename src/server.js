@@ -22,4 +22,5 @@ const httpServer = express(); // extrair o servidor http de dentro do express e 
  httpServer.use(routes);
 
  
- httpServer.listen(process.env.PORT || 3232);
+//  httpServer.listen(3232);
+ httpServer.listen(process.env.PORT || 3232)
