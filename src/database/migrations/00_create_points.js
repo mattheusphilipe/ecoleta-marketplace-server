@@ -16,8 +16,8 @@ exports.up = async function up(knex) {
         table.string('zip_code').notNullable();
         table.integer('addressNumber').notNullable();
         table.string('neighborhood').notNullable();
-        table.decimal('longitude').notNullable();
-        table.decimal('latitude').notNullable();
+        table.float('longitude').notNullable();
+        table.float('latitude').notNullable();
     });
 }
 

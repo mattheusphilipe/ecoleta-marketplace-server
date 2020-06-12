@@ -32,7 +32,7 @@ class PointerController {
                 
                  ({
                    ...point,
-                   image_url: `${process.env.APP_URL}userUploads/${point.image}`
+                    image_url: `${process.env.APP_URL}userUploads/${point.image}`
                     // image_url: `http://localhost:3232/userUploads/${point.image}`
                 })
                 
@@ -132,11 +132,10 @@ class PointerController {
                      neighborhood: String(neighborhood) || '',
                      telephone: String(telephone) ,
                      cellphone: String(cellphone) || '',
-                     latitude: parseFloat(latitude),
-                     longitude: parseFloat(longitude)
+                     latitude: Number(latitude),
+                     longitude: Number(longitude)
                  };
 
-             
 
             const collect_point_id =  await trx('collect_points').returning('id').insert(pointsItems);
             // sqlite dont needs returning id but pg needs const 
