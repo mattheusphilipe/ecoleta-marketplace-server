@@ -8,7 +8,7 @@ class ItemsController {
             const items = await knex('collected_items').select('*');
             const serializedItems = items.map(({title, image, id}) => 
                  ({id, title, image_url: `${process.env.APP_URL}uploads/${image}`}));
-                // ({id, title, image_url: `http://localhost:3232/uploads/${image}`}));
+                //  ({id, title, image_url: `http://localhost:3232/uploads/${image}`}));
             response.json(serializedItems);
 
         } catch (err) {
